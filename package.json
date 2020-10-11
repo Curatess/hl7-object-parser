@@ -1,5 +1,5 @@
 {
-  "name": "@rimiti/hl7-object-parser",
+  "name": "@curatess/hl7-object-parser",
   "version": "2.9.0",
   "description": "Node hl7 object parser",
   "license": "MIT",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rimiti/hl7-object-parser.git"
+    "url": "git+https://github.com/curatess/hl7-object-parser.git"
   },
   "keywords": [
     "node",
@@ -27,9 +27,9 @@
     "url": "dimsolution.com"
   },
   "bugs": {
-    "url": "https://github.com/rimiti/hl7-object-parser/issues"
+    "url": "https://github.com/curatess/hl7-object-parser/issues"
   },
-  "homepage": "https://github.com/rimiti/hl7-object-parser#readme",
+  "homepage": "https://github.com/curatess/hl7-object-parser#readme",
   "dependencies": {
     "simple-hl7": "^2.2.1"
   },
