@@ -1,6 +1,6 @@
 import simpleHL7 from 'simple-hl7'
 
-export default class hl7 {
+export default class HL7Decoder {
 
   constructor(message, config) {
     const hl7Parser = new simpleHL7.Parser()

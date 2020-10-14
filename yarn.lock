@@ -2711,7 +2711,7 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-moment@^2.10.3:
+moment@2.24.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
@@ -3499,14 +3499,14 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
   integrity sha1-tf3AjxKH6hF4Yo5BXiUTK3NkbG0=
 
-simple-hl7@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/simple-hl7/-/simple-hl7-2.2.1.tgz#2a5ee30bd2b622255949f3287bbc8f57dab63309"
-  integrity sha512-+cqQIlViuHRpmADPrVBTO4qwg1O7++CslpNjlsJhAFFbLnRipxYSj21VRgC1n+hVflnC1bFBODdUcjM+fvH+jQ==
+simple-hl7@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/simple-hl7/-/simple-hl7-3.2.1.tgz#9fa0079974143a8512dba75fe2abbba427271ad5"
+  integrity sha512-xwYf9Yzn8gNBR32JoNa09Px2nTtPFfrw+Jvp+3SR76EpsU4kRhuoJS7egnwhm7LYjUUbL7x33dCOlSbiwrB8Fg==
   dependencies:
-    moment "^2.10.3"
-    utils-merge "^1.0.0"
-    watch "^0.16.0"
+    moment "2.24.0"
+    utils-merge "1.0.0"
+    watch "0.16.0"
 
 sisteransi@^1.0.0:
   version "1.0.0"
@@ -3934,10 +3934,10 @@ util.promisify@^1.0.0:
     define-properties "^1.1.2"
     object.getownpropertydescriptors "^2.0.3"
 
-utils-merge@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
-  integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
+utils-merge@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.0.tgz#0294fb922bb9375153541c4f7096231f287c8af8"
+  integrity sha1-ApT7kiu5N1FTVBxPcJYjHyh8ivg=
 
 uuid@^3.3.2:
   version "3.3.2"
@@ -3975,7 +3975,7 @@ walker@~1.0.5:
   dependencies:
     makeerror "1.0.x"
 
-watch@^0.16.0:
+watch@0.16.0:
   version "0.16.0"
   resolved "https://registry.yarnpkg.com/watch/-/watch-0.16.0.tgz#972f98eabae5610c116f6432450eea91df68ab71"
   integrity sha1-ly+Y6rrlYQwRb2QyRQ7qkd9oq3E=
