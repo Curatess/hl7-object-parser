@@ -2,11 +2,12 @@ import simpleHL7 from 'simple-hl7'
 
 export default class HL7Decoder {
 
-  constructor(message, config) {
+  constructor(message, config, options) {
     const hl7Parser = new simpleHL7.Parser()
     message = hl7Parser.parse(message)
     this._message = message
     this._config = config
+    this._options = options
   }
 
   getSegmentsByType(type) {
@@ -73,13 +74,28 @@ export default class HL7Decoder {
    * @private
    */
   _generateObject(obj, property, value) {
-    let paths = property.split('.')
-    let i = 0
-    let tmp = obj
-    for (; i < paths.length - 1; i++) {
-      tmp = (tmp[paths[i]]) ? Object.assign(tmp[paths[i]], tmp[paths[i]]) : tmp[paths[i]] = {}
+    if (!this._shouldSkipEntry(value)) {
+      let paths = property.split('.')
+      let i = 0
+      let tmp = obj
+      for (; i < paths.length - 1; i++) {
+        tmp = (tmp[paths[i]]) ? Object.assign(tmp[paths[i]], tmp[paths[i]]) : tmp[paths[i]] = {}
+      }
+      tmp[paths[i]] = value
     }
-    tmp[paths[i]] = value
+  }
+
+  /**
+   * @param {param} value 
+   * @returns {boolean}
+   * @private
+   */
+  _shouldSkipEntry(value) {
+    if (this._options.skip_empty_entries === true && !value) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }
