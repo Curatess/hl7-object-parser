@@ -10,12 +10,6 @@ export default class HL7Decoder {
     this._options = options
   }
 
-  getSegmentsByType(type) {
-    return this._message.segments.filter((item) => {
-      return item.name === type
-    })
-  }
-
   /**
    * @description Convert from config mapping file hl7 to object
    * @return {{}}
@@ -23,47 +17,75 @@ export default class HL7Decoder {
   process() {
     let obj = {}
     for (let segment in this._config.mapping) {
-      let segmentType = segment.toUpperCase()
-      let segmentsOfType = (segmentType === 'MSH')
-        ? [this._message.header]
-        : this.getSegmentsByType(segment.toUpperCase())
+      this._processSegment(obj, segment);
+    }
+    return obj
+  }
 
-      obj[segment] = []
+  /**
+   * @param {string} type 
+   * @returns {}
+   */
+  getSegmentsByType(type) {
+    return this._message.segments.filter((item) => {
+      return item.name === type
+    })
+  }
 
-      for (let s of segmentsOfType) {
-        let tmpObj = {}
+  /**
+   * @param {object} obj 
+   * @param {string} segment 
+   * @private
+   */
+  _processSegment(obj, segment) {
+    let segmentType = segment.toUpperCase()
+    let segmentsOfType = (segmentType === 'MSH')
+      ? [this._message.header]
+      : this.getSegmentsByType(segment.toUpperCase())
+    obj[segment] = []
+    for (let segmentOfType of segmentsOfType) {
+      this._processSegmentOfType(obj, segment, segmentOfType, segmentsOfType);
+    }
+  }
 
-        for (let value of this._config.mapping[segment].values) {
-          if (value.field && s instanceof Object) {
-            let index1 = value.component[0]
-            let index2 = value.component[1]
-
-            if (s.getField(index1).includes('~')) {
-              let split = s.getField(index1).split('~')
-              let array = []
-              for (let v of split) {
-                array.push(v.split('^'))
-              }
-
-              let output = []
-              for (let v in array) {
-                (array[v][value.component[1] - 1]) ? output.push(array[v][value.component[1] - 1]) : output.push('')
-              }
-              this._generateObject(tmpObj, value.field, output)
-            } else {
-              this._generateObject(tmpObj, value.field, s.getComponent(index1, index2))
-            }
+  /**
+   * @param {object} obj 
+   * @param {string} segment 
+   * @param {any} segmentOfType 
+   * @param {string} segmentsOfType 
+   * @private
+   */
+  _processSegmentOfType(obj, segment, segmentOfType, segmentsOfType) {
+    let tmpObj = {}
+    for (let value of this._config.mapping[segment].values) {
+      if (value.field && segmentOfType instanceof Object) {
+        let index1 = value.component[0]
+        let index2 = value.component[1]
+        if (segmentOfType.getField(index1).includes('~')) {
+          let split = segmentOfType.getField(index1).split('~')
+          let array = []
+          for (let v of split) {
+            array.push(v.split('^'))
           }
-        }
-
-        if (segmentsOfType.length > 1) {
-          obj[segment].push(tmpObj[segment])
+          let output = []
+          for (let v in array) {
+            (array[v][value.component[1] - 1]) ? output.push(array[v][value.component[1] - 1]) : output.push('')
+          }
+          if (!this._shouldSkipEntry(value)) {
+            this._generateObject(tmpObj, value.field, output)
+          }
         } else {
-          obj[segment] = tmpObj[segment]
+          if (!this._shouldSkipEntry(value)) {
+            this._generateObject(tmpObj, value.field, segmentOfType.getComponent(index1, index2))
+          }
         }
       }
     }
-    return obj
+    if (segmentsOfType.length > 1) {
+      obj[segment].push(tmpObj[segment])
+    } else {
+      obj[segment] = tmpObj[segment]
+    }
   }
 
   /**
@@ -74,15 +96,13 @@ export default class HL7Decoder {
    * @private
    */
   _generateObject(obj, property, value) {
-    if (!this._shouldSkipEntry(value)) {
-      let paths = property.split('.')
-      let i = 0
-      let tmp = obj
-      for (; i < paths.length - 1; i++) {
-        tmp = (tmp[paths[i]]) ? Object.assign(tmp[paths[i]], tmp[paths[i]]) : tmp[paths[i]] = {}
-      }
-      tmp[paths[i]] = value
+    let paths = property.split('.')
+    let i = 0
+    let tmp = obj
+    for (; i < paths.length - 1; i++) {
+      tmp = (tmp[paths[i]]) ? Object.assign(tmp[paths[i]], tmp[paths[i]]) : tmp[paths[i]] = {}
     }
+    tmp[paths[i]] = value
   }
 
   /**
