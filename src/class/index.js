@@ -24,6 +24,7 @@ export default class Decoder {
   generateOptions(options) {
     const defaultOptions = {
       skip_empty_entries: false,
+      identifier_table: null,
     }
     return {
       ...defaultOptions,

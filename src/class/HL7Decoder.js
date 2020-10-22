@@ -38,8 +38,7 @@ export default class HL7Decoder {
    * @private
    */
   _processSegment(obj, segment) {
-    let segmentType = segment.toUpperCase()
-    let segmentsOfType = (segmentType === 'MSH')
+    const segmentsOfType = (segment.toUpperCase() === 'MSH')
       ? [this._message.header]
       : this.getSegmentsByType(segment.toUpperCase())
     obj[segment] = []
@@ -56,28 +55,24 @@ export default class HL7Decoder {
    * @private
    */
   _processSegmentOfType(obj, segment, segmentOfType, segmentsOfType) {
-    let tmpObj = {}
+    const tmpObj = {}
     for (let value of this._config.mapping[segment].values) {
       if (value.field && segmentOfType instanceof Object) {
-        let index1 = value.component[0]
-        let index2 = value.component[1]
+        const index1 = value.component[0]
+        const index2 = value.component[1]
         if (segmentOfType.getField(index1).includes('~')) {
           let split = segmentOfType.getField(index1).split('~')
           let array = []
           for (let v of split) {
             array.push(v.split('^'))
           }
-          let output = []
+          const output = []
           for (let v in array) {
             (array[v][value.component[1] - 1]) ? output.push(array[v][value.component[1] - 1]) : output.push('')
           }
-          if (!this._shouldSkipEntry(value)) {
-            this._generateObject(tmpObj, value.field, output)
-          }
+          this._generateObject(tmpObj, value.field, output, value.table)
         } else {
-          if (!this._shouldSkipEntry(value)) {
-            this._generateObject(tmpObj, value.field, segmentOfType.getComponent(index1, index2))
-          }
+          this._generateObject(tmpObj, value.field, segmentOfType.getComponent(index1, index2), value.table)
         }
       }
     }
@@ -90,19 +85,45 @@ export default class HL7Decoder {
 
   /**
    * @description Add attribute(s) into existing object
-   * @param obj
-   * @param property
-   * @param value
+   * @param {object} obj
+   * @param {string} property
+   * @param {any} value
+   * @param {string} table
    * @private
    */
-  _generateObject(obj, property, value) {
-    let paths = property.split('.')
-    let i = 0
-    let tmp = obj
-    for (; i < paths.length - 1; i++) {
-      tmp = (tmp[paths[i]]) ? Object.assign(tmp[paths[i]], tmp[paths[i]]) : tmp[paths[i]] = {}
+  _generateObject(obj, property, value, table) {
+    if (!this._shouldSkipEntry(value)) {
+      const paths = property.split('.')
+      let i = 0
+      let tmp = obj
+      for (; i < paths.length - 1; i++) {
+        tmp = (tmp[paths[i]]) ? Object.assign(tmp[paths[i]], tmp[paths[i]]) : tmp[paths[i]] = {}
+      }
+      tmp[paths[i]] = value
+      const resolvedTableIdentifier = this._resolveTableIdentifer(table, value)
+      if (resolvedTableIdentifier) {
+        tmp[`${paths[i]}Resolved`] = resolvedTableIdentifier
+      }
     }
-    tmp[paths[i]] = value
+  }
+
+  /**
+   * @param {string} table 
+   * @param {any} value 
+   * @returns {any}
+   */
+  _resolveTableIdentifer(table, value) {
+    if (
+      table &&
+      this._options.identifier_table && 
+      this._options.identifier_table.mapping && 
+      this._options.identifier_table.mapping[table] &&
+      this._options.identifier_table.mapping[table][value]
+    ) {
+      return this._options.identifier_table.mapping[table][value];
+    } else {
+      return null;
+    }
   }
 
   /**

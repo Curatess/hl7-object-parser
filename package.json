@@ -1,6 +1,6 @@
 {
   "name": "@curatess/hl7-object-parser",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Node hl7 object parser",
   "license": "MIT",
   "main": "dist/lib/parser.js",
