@@ -25,6 +25,7 @@ export default class Decoder {
     const defaultOptions = {
       skip_empty_entries: false,
       identifier_table: null,
+      table_resolved_key_suffix: 'Resolved',
     }
     return {
       ...defaultOptions,

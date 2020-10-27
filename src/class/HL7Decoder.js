@@ -102,7 +102,11 @@ export default class HL7Decoder {
       tmp[paths[i]] = value
       const resolvedTableIdentifier = this._resolveTableIdentifer(table, value)
       if (resolvedTableIdentifier) {
-        tmp[`${paths[i]}Resolved`] = resolvedTableIdentifier
+        tmp[`${paths[i]}${this._options.table_resolved_key_suffix}`] = {
+          table,
+          code: value,
+          value: resolvedTableIdentifier,
+        }
       }
     }
   }
